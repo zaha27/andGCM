@@ -1,6 +1,0 @@
-{
-    "fix": ["resolve", "patch", "correct", "handle"],
-    "add": ["implement", "create", "introduce", "develop"],
-    "update": ["refactor", "adjust", "revise", "modify"],
-    "remove": ["eliminate", "delete", "strip out", "clean"]
-}
