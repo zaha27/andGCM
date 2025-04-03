@@ -8,7 +8,7 @@ echo "[+] Creăm folderul $INSTALL_DIR..."
 mkdir -p "$INSTALL_DIR"
 
 echo "[+] Copiem scriptul..."
-cp gcm_enhance.py "$TARGET_PATH"
+cp gcm "$TARGET_PATH"
 chmod +x "$TARGET_PATH"
 
 if [[ "$SHELL" == *"zsh" ]]; then
@@ -31,7 +31,7 @@ else
 fi
 
 echo ""
-echo "[ℹ] Pentru a finaliza instalarea, rulează manual comanda:"
+echo "[ℹ️] Rulează comanda asta pentru a activa imediat:"
 echo "     source $SHELL_RC"
 echo ""
 echo "[✓] După aceea, poți folosi:"

@@ -3,9 +3,24 @@
 import argparse
 import subprocess
 
+
+def has_git_history():
+    try:
+        subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def has_staged_changes():
+    result = subprocess.run(['git', 'diff', '--cached', '--name-only'], stdout=subprocess.PIPE, text=True)
+    return bool(result.stdout.strip())
+
+
 def get_git_diff():
     result = subprocess.run(['git', 'diff', '--cached'], stdout=subprocess.PIPE, text=True)
     return result.stdout
+
 
 def parse_diff(diff_text):
     summary_keywords = set()
@@ -41,6 +56,7 @@ def parse_diff(diff_text):
 
     return f"{commit_type}: update {summary} logic"
 
+
 def main():
     parser = argparse.ArgumentParser(description="Smart Git Commit Enhancer")
     parser.add_argument("--smart", action="store_true", help="Enable smart diff-based analysis")
@@ -48,13 +64,22 @@ def main():
     args = parser.parse_args()
 
     if args.smart:
+        if not has_git_history():
+            print("❌ Eroare: Repository-ul Git nu are niciun commit. Fă un prim commit manual (ex: README.md).")
+            return
+
+        if not has_staged_changes():
+            print("❌ Nu există fișiere stagiate. Folosește `git add <fișier>` înainte de a genera commit-ul.")
+            return
+
         diff = get_git_diff()
         message = parse_diff(diff)
-        print(f"Generated commit message: {message}")
+        print(f"✅ Commit generat: {message}")
         if args.auto_commit:
             subprocess.run(['git', 'commit', '-m', message])
     else:
-        print("Use --smart to generate message from staged changes.")
+        print("ℹ️  Folosește --smart pentru a genera mesaj din codul modificat.")
+
 
 if __name__ == "__main__":
     main()
