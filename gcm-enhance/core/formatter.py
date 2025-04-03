@@ -1,8 +1,8 @@
 from typing import Dict
-from colorama import Fore, Style, init
-
-init(autoreset=True)
-
+#from colorama import Fore, Style, init
+#
+#init(autoreset=True)
+#
 def print_commit_preview(message: str, summaries: Dict[str, str]):
     print("\n" + "=" * 50)
     print(f"{Fore.CYAN}{Style.BRIGHT}🔍 Suggested commit:")
