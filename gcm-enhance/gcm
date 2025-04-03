@@ -43,5 +43,7 @@ def main():
         print("⚙️  Or use --set to update config keys.")
         print("📘 Example: gcm --smart --auto-commit --style corporate")
 
+
+
 if __name__ == "__main__":
     main()

@@ -11,6 +11,10 @@ def apply_style(commit_type: str, summary: str, style: str = "conventional"):
         type_cap=commit_type.capitalize(),
         summary=summary
     )
+
+
+
+
 #
 ##
 #
