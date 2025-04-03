@@ -1,5 +1,5 @@
 from typing import Dict
-from colorama import Fore, Style, init
+from colorama import Fore, Style, init # type: ignore
 
 init(autoreset=True)
 

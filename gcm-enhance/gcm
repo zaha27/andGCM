@@ -1,24 +1,30 @@
 #!/usr/bin/env python3
-
 import sys
 import os
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(SCRIPT_DIR))
-
 import argparse
 import subprocess
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPT_DIR)
+
 from core.diff_parser import analyze_diff
 from core.formatter import render_preview
 from config.config_loader import load_config, update_config_key
 
 def main():
-    parser = argparse.ArgumentParser(description="GCM - Git Commit Message Enhancer")
-    parser.add_argument("--smart", action="store_true", help="Analyze current staged changes and generate commit message")
-    parser.add_argument("--auto-commit", action="store_true", help="Automatically run git commit with generated message")
-    parser.add_argument("--style", help="Commit message style: conventional | corporate | fun")
-    parser.add_argument("--visual-style", help="Preview style: default | minimal | markdown | boxed")
-    parser.add_argument("--set", nargs=2, metavar=("KEY", "VALUE"), help="Update config key in .gcmconfig")
+    parser = argparse.ArgumentParser(
+        prog="gcm",
+        description="GCM - Git Commit Message Enhancer",
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+
+    parser.add_argument("--smart", action="store_true", help="Analyze staged changes and generate a commit message")
+    parser.add_argument("--auto-commit", action="store_true", help="Automatically commit with the generated message")
+    parser.add_argument("--amend", action="store_true", help="Amend the last commit with a new smart message")
+    parser.add_argument("--undo-last", action="store_true", help="Undo the last commit (soft reset)")
+    parser.add_argument("--style", help="Choose commit style: conventional | corporate | fun")
+    parser.add_argument("--visual-style", help="Choose preview style: default | minimal | markdown | boxed")
+    parser.add_argument("--set", nargs=2, metavar=("KEY", "VALUE"), help="Update .gcmconfig key (e.g., default_style, auto_commit)")
 
     args = parser.parse_args()
 
@@ -32,18 +38,22 @@ def main():
     visual_style = args.visual_style if args.visual_style else config["visual_preview"]
     auto_commit = args.auto_commit or config["auto_commit"]
 
-    if args.smart:
+    if args.undo_last:
+        subprocess.run(["git", "reset", "--soft", "HEAD~1"])
+        print("[↩️] Last commit undone (soft reset).")
+        return
+
+    if args.smart or args.amend:
         message, summaries, commit_type = analyze_diff(style=style)
         render_preview(message, summaries, style=visual_style)
 
-        if auto_commit:
+        if args.amend:
+            subprocess.run(['git', 'commit', '--amend', '-m', message])
+            print("[✏️] Last commit amended.")
+        elif auto_commit:
             subprocess.run(['git', 'commit', '-m', message])
     else:
-        print("\n🧠 Use --smart to analyze current staged changes.")
-        print("⚙️  Or use --set to update config keys.")
-        print("📘 Example: gcm --smart --auto-commit --style corporate")
-
-
+        parser.print_help()
 
 if __name__ == "__main__":
     main()
