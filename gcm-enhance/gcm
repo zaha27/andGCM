@@ -63,6 +63,9 @@ def main():
     parser.add_argument("--auto-commit", action="store_true", help="Automatically commit with enhanced message")
     args = parser.parse_args()
 
+
+
+
     if args.smart:
         if not has_git_history():
             print("❌ Eroare: Repository-ul Git nu are niciun commit. Fă un prim commit manual (ex: README.md).")
