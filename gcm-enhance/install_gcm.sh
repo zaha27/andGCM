@@ -8,7 +8,7 @@ echo "[+] Creating folder: $INSTALL_DIR"
 mkdir -p "$INSTALL_DIR"
 
 echo "[+] Copying script to $TARGET_PATH"
-cp gcm "$TARGET_PATH"
+cp -r core config gcm "$INSTALL_DIR"
 chmod +x "$TARGET_PATH"
 
 # Detect shell config file

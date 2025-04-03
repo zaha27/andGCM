@@ -17,7 +17,6 @@ CONTEXT_TAGS = {
 }
 
 def get_staged_diff():
-    """Returns the output of `git diff --cached`"""
     result = subprocess.run(['git', 'diff', '--cached'], stdout=subprocess.PIPE, text=True)
     return result.stdout
 
@@ -37,7 +36,6 @@ def parse_diff_by_file(diff_text):
 
     for file, lines in file_changes.items():
         tag_count = defaultdict(int)
-
         for line in lines:
             lowered = line.lower()
             for ctype, keywords in COMMIT_KEYWORDS.items():
@@ -47,10 +45,8 @@ def parse_diff_by_file(diff_text):
                 if any(kw in lowered for kw in keywords):
                     tag_count[tag] += 1
 
-        # select top 1-2 tags (by frequency)
         sorted_tags = sorted(tag_count.items(), key=lambda x: x[1], reverse=True)
         top_tags = [tag for tag, _ in sorted_tags[:2]]
-
         summary = " and ".join(top_tags) if top_tags else "general changes"
         file_summaries[file] = summary
 
@@ -60,21 +56,10 @@ def parse_diff_by_file(diff_text):
 
     return final_type, file_summaries
 
-
 def analyze_diff(style="conventional"):
-    """
-    Central function for CLI.
-
-    Returns:
-    - final commit message (string)
-    - per-file summaries (dict)
-    - commit type (str)
-    """
     diff_text = get_staged_diff()
     commit_type, summaries = parse_diff_by_file(diff_text)
-
-    summaries_set = set(summaries.values())
-    joined_summary = " and ".join(list(summaries_set)[:2]) if summaries_set else "code"
-
-    message = apply_style(commit_type, joined_summary, style=style)
+    unique_summaries = list(set(summaries.values()))
+    summary_title = " and ".join(unique_summaries[:2]) if unique_summaries else "code"
+    message = apply_style(commit_type, summary_title, style=style)
     return message, summaries, commit_type

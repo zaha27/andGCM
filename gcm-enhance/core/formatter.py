@@ -3,7 +3,7 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)
 
-def print_commit_preview(message: str, summaries: Dict[str, str], commit_type: str):
+def print_commit_preview(message: str, summaries: Dict[str, str]):
     print("\n" + "=" * 50)
     print(f"{Fore.CYAN}{Style.BRIGHT}🔍 Suggested commit:")
     print(f"{Fore.GREEN}{message}")
@@ -36,4 +36,4 @@ def render_preview(message: str, summaries: Dict[str, str], style: str = "defaul
         print(f"|  {Fore.GREEN}{message}{Style.RESET_ALL}  |")
         print(border + "\n")
         return
-    print_commit_preview(message, summaries, commit_type="auto")
+    print_commit_preview(message, summaries)
