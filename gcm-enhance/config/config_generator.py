@@ -1,36 +1,15 @@
-import json
-import os
-from pathlib import Path
+def launch_config_menu():
+    print("=== GCM Config Menu ===")
+    style = input("Preferred style (formal/fun/minimal): ")
+    auto_commit = input("Enable auto-commit? (yes/no): ")
 
-DEFAULT_CONFIG = {
-    "default_style": "conventional",
-    "visual_preview": "default",
-    "auto_commit": False
-}
+    config = {
+        "style": style,
+        "auto_commit": auto_commit.lower() in ["yes", "true", "1"]
+    }
 
-CONFIG_PATH = Path.home() / ".gcmconfig"
+    import json
+    with open("config/config.json", "w") as f:
+        json.dump(config, f, indent=4)
 
-def load_config():
-    if CONFIG_PATH.exists():
-        try:
-            with open(CONFIG_PATH, "r") as f:
-                data = json.load(f)
-                return {**DEFAULT_CONFIG, **data}
-        except json.JSONDecodeError:
-            print("⚠️  Invalid .gcmconfig file. Using defaults.")
-    return DEFAULT_CONFIG
-
-def save_config(config_dict):
-    with open(CONFIG_PATH, "w") as f:
-        json.dump(config_dict, f, indent=4)
-
-def update_config_key(key: str, value):
-    config = load_config()
-    if key not in DEFAULT_CONFIG:
-        print(f"❌ Unknown config key: {key}")
-        return
-    if isinstance(DEFAULT_CONFIG[key], bool):
-        value = value.lower() in ("true", "1", "yes", "on")
-    config[key] = value
-    save_config(config)
-    print(f"✅ Updated '{key}' to '{value}' in .gcmconfig")
+    print("[✓] Config saved to config/config.json")

@@ -10,7 +10,7 @@ echo "[+] Copying CLI files..."
 cp -r gcm core config "$INSTALL_DIR"
 chmod +x "$TARGET_PATH"
 
-# Detect user's shell and choose RC file
+# Detect user's shell
 CURRENT_SHELL=$(basename "$SHELL")
 if [[ "$CURRENT_SHELL" == "zsh" ]]; then
     SHELL_RC="$HOME/.zshrc"
@@ -22,7 +22,7 @@ fi
 
 echo "[+] Using shell config file: $SHELL_RC"
 
-# Add to PATH if not already added
+# Add to PATH if not already present
 if ! grep -q 'export PATH="$HOME/gcm:$PATH"' "$SHELL_RC"; then
     echo "" >> "$SHELL_RC"
     echo "# GCM Enhance CLI" >> "$SHELL_RC"
@@ -32,7 +32,7 @@ else
     echo "[✓] PATH already contains GCM"
 fi
 
-# Spinner animation function
+# Spinner while installing colorama
 spinner() {
     local pid=$1
     local delay=0.1
@@ -48,7 +48,7 @@ spinner() {
     echo " [✓]  Colorama installed!"
 }
 
-# Install Python dependency: colorama
+# Install Python dependency
 python3 -c "import colorama" 2>/dev/null
 if [[ $? -ne 0 ]]; then
     echo "[+] Installing Python dependency: colorama"
@@ -58,18 +58,16 @@ else
     echo "[✓] 'colorama' is already installed"
 fi
 
-# Final instructions
+# Final output
 echo ""
-echo "[✅] Installation complete!"
+echo "[✅] GCM installation complete!"
 echo ""
-echo "[➡️] To finalize setup, run this in your terminal:"
+echo "[➡️] To finalize, run in your terminal:"
 echo ""
 echo "     source $SHELL_RC"
 echo ""
-echo "[🧪] Then test GCM with:"
+echo "[🚀] Then launch GCM with:"
 echo ""
-echo "     gcm --smart"
-echo ""
-echo "[💡] Tip: personalize with:"
-echo "     gcm --set default_style corporate"
+echo "     gcm -config      # to configure style & preferences"
+echo "     gcm -a           # to generate commit messages"
 echo ""
