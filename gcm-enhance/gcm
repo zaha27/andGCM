@@ -13,7 +13,8 @@ def main():
         from config.config_generator import launch_config_menu
         launch_config_menu()
     elif arg == "-a":
-        print("Launching commit assistant... (to be implemented)")
+        from core.instructions import launch_instruction_menu
+        launch_instruction_menu()
     else:
         print("Unknown argument. Use -config or -a.")
 
