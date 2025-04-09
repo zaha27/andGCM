@@ -7,15 +7,15 @@ Your task is to write a short and meaningful Git commit message in imperative mo
 (like 'Fix login issue' or 'Add user validation') based ONLY on the staged git diff.
 
 Guidelines:
-- Do NOT include file names or code.
-- DO write only the purpose of the change.
-- Maximum one sentence. Maximum 100 characters.
-- Be precise, concise, and professional.
+- DO NOT include file names or code.
+- DO NOT explain the change, just summarize it as a title.
+- Only return the commit message. No introduction, no formatting.
+- ONE line only. MAX 100 characters.
 
 Git diff:
 {diff_text}
 
-Commit message:"""
+Return only the commit message below:"""
 
     print("⏳ Asking the model via Ollama...")
 
@@ -26,7 +26,7 @@ Commit message:"""
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            timeout=60  # max 60 sec
+            timeout=60
         )
 
         if result.returncode != 0:
