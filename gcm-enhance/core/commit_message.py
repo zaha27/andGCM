@@ -1,30 +1,26 @@
 import subprocess
-from config.config_loader import load_config
-from core.diff_parser import analyze_diff
-from core.formatter import render_preview
+from core.llm.ollama import generate_commit_message_with_ollama
 
 def main_gcm():
-    # Check for staged changes
     diff = subprocess.run(["git", "diff", "--cached"], stdout=subprocess.PIPE, text=True).stdout
     if not diff.strip():
         print("⚠️  No staged changes detected. Use 'git add' before running gcm.")
         return
 
-    config = load_config()
-    style = config.get("default_style", "conventional")
-    visual = config.get("visual_preview", "default")
-    auto = config.get("auto_commit", False)
+    print("🤖 Generating commit message with Ollama...")
 
-    message, summaries, commit_type = analyze_diff(style=style)
-    render_preview(message, summaries, style=visual)
+    message = generate_commit_message_with_ollama(diff)
 
-    if auto:
+    if not message:
+        print("❌ Failed to generate commit message with Ollama.")
+        return
+
+    print("\n🔍 Suggested commit message:")
+    print(f"\"{message}\"\n")
+
+    confirm = input("Do you want to use this commit message? (y/n): ").strip().lower()
+    if confirm == "y":
         subprocess.run(["git", "commit", "-m", message])
-        print("✅ Auto-commit completed.")
+        print("✅ Commit created.")
     else:
-        choice = input("Do you want to commit this? (y/n): ").strip().lower()
-        if choice == "y":
-            subprocess.run(["git", "commit", "-m", message])
-            print("✅ Commit completed.")
-        else:
-            print("❌ Commit canceled.")
+        print("❌ Commit cancelled.")
