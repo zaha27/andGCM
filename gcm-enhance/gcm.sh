@@ -32,7 +32,7 @@ else
     echo "[✓] PATH already contains GCM"
 fi
 
-# Spinner while installing colorama
+# Spinner animation
 spinner() {
     local pid=$1
     local delay=0.1
@@ -63,11 +63,9 @@ echo ""
 echo "[✅] GCM installation complete!"
 echo ""
 echo "[➡️] To finalize, run in your terminal:"
-echo ""
 echo "     source $SHELL_RC"
 echo ""
 echo "[🚀] Then launch GCM with:"
-echo ""
 echo "     gcm -config      # to configure style & preferences"
-echo "     gcm -a           # to generate commit messages"
+echo "     gcm -a           # to access advanced tools"
 echo ""
