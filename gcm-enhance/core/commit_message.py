@@ -1,26 +1,39 @@
 import subprocess
-from core.llm.ollama import generate_commit_message_with_ollama
+from config.config_loader import load_config
+from core.llm.ollama import generate_commit_message_with_ollama, is_ollama_running
 
 def main_gcm():
+    if not is_ollama_running():
+        print("❌ Ollama daemon is not running.")
+        print("💡 Tip: run 'open -a Ollama' or 'ollama serve' to start it.")
+        return
+
     diff = subprocess.run(["git", "diff", "--cached"], stdout=subprocess.PIPE, text=True).stdout
+
     if not diff.strip():
         print("⚠️  No staged changes detected. Use 'git add' before running gcm.")
         return
 
-    print("🤖 Generating commit message with Ollama...")
+    config = load_config()
+    model = config.get("llm_model", "codellama")
 
-    message = generate_commit_message_with_ollama(diff)
+    print(f"🤖 Generating commit message using model: {model}...\n")
+    message = generate_commit_message_with_ollama(diff, model=model)
 
     if not message:
-        print("❌ Failed to generate commit message with Ollama.")
+        print("❌ Commit message generation failed.")
         return
 
-    print("\n🔍 Suggested commit message:")
+    print("🔍 Suggested commit message:")
     print(f"\"{message}\"\n")
 
-    confirm = input("Do you want to use this commit message? (y/n): ").strip().lower()
-    if confirm == "y":
+    if config.get("auto_commit", False):
         subprocess.run(["git", "commit", "-m", message])
-        print("✅ Commit created.")
+        print("✅ Auto-commit completed.")
     else:
-        print("❌ Commit cancelled.")
+        choice = input("Do you want to use this message? (y/n): ").strip().lower()
+        if choice == "y":
+            subprocess.run(["git", "commit", "-m", message])
+            print("✅ Commit created.")
+        else:
+            print("❌ Commit cancelled.")

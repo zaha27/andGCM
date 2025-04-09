@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 import sys
-import os
 
 def main():
     if len(sys.argv) == 1:
-        # No arguments provided → run main smart commit
+        # No arguments provided → run LLM-based commit generation
         from core.commit_message import main_gcm
         main_gcm()
         return

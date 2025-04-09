@@ -1,15 +1,20 @@
+import json
+from config.config_loader import save_config
+
 def launch_config_menu():
     print("=== GCM Config Menu ===")
-    style = input("Preferred style (formal/fun/minimal): ")
-    auto_commit = input("Enable auto-commit? (yes/no): ")
+
+    style = input("Preferred style (conventional/corporate/fun): ").strip()
+    auto_commit = input("Enable auto-commit? (yes/no): ").strip().lower()
+    visual_preview = input("Preview style (default/markdown/minimal/boxed): ").strip()
+    llm_model = input("LLM model (codellama/mistral/tinyllama): ").strip()
 
     config = {
-        "style": style,
-        "auto_commit": auto_commit.lower() in ["yes", "true", "1"]
+        "default_style": style,
+        "auto_commit": auto_commit in ["yes", "true", "1"],
+        "visual_preview": visual_preview,
+        "llm_model": llm_model
     }
 
-    import json
-    with open("config/config.json", "w") as f:
-        json.dump(config, f, indent=4)
-
-    print("[✓] Config saved to config/config.json")
+    save_config(config)
+    print("[✓] Config saved to ~/.gcmconfig")
