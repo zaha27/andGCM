@@ -3,8 +3,10 @@ import sys
 import os
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: gcm -config | -a")
+    if len(sys.argv) == 1:
+        # No arguments provided → run main smart commit
+        from core.commit_message import main_gcm
+        main_gcm()
         return
 
     arg = sys.argv[1]
