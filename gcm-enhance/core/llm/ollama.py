@@ -1,23 +1,18 @@
 import subprocess
 
 def generate_commit_message_with_ollama(diff_text: str, model: str = "codellama"):
-    prompt = f"""You are an expert software engineer.
-
-Generate a short and meaningful Git commit message in imperative mood
-(e.g., 'Fix login bug', 'Add user validation', 'Update API endpoint') based ONLY on this git diff.
+    prompt = f"""Generate a single-line Git commit message in imperative mood 
+(like 'Fix crash on login', 'Add logout button') based on the following git diff.
 
 Rules:
-- Do NOT include filenames, code, or explanations.
-- ONLY return the message.
-- ONE LINE. Max 100 characters.
-- Do NOT return this prompt or repeat anything from it.
+- DO NOT include file names, code, or explanations.
+- DO NOT return anything else. Just the commit message.
+- Maximum ONE LINE.
 
 Git diff:
 {diff_text}
 
---- Commit message starts below this line ---
-"""
-
+Commit:"""
 
     print("⏳ Asking the model via Ollama...")
 
@@ -37,7 +32,19 @@ Git diff:
             return None
 
         response = result.stdout.strip()
-        return response.splitlines()[0] if response else None
+
+        for line in response.splitlines():
+            line = line.strip()
+            if (
+                line
+                and len(line) < 120
+                and not line.lower().startswith("verse")
+                and not line.lower().startswith("you are")
+                and "generate" not in line.lower()
+            ):
+                return line
+
+        return None
 
     except subprocess.TimeoutExpired:
         print("⏱️ Ollama took too long to respond. Commit not generated.")
