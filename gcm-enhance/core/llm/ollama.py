@@ -3,19 +3,21 @@ import subprocess
 def generate_commit_message_with_ollama(diff_text: str, model: str = "codellama"):
     prompt = f"""You are an expert software engineer.
 
-Your task is to write a short and meaningful Git commit message in imperative mood
-(like 'Fix login issue' or 'Add user validation') based ONLY on the staged git diff.
+Generate a short and meaningful Git commit message in imperative mood
+(e.g., 'Fix login bug', 'Add user validation', 'Update API endpoint') based ONLY on this git diff.
 
-Guidelines:
-- DO NOT include file names or code.
-- DO NOT explain the change, just summarize it as a title.
-- Only return the commit message. No introduction, no formatting.
-- ONE line only. MAX 100 characters.
+Rules:
+- Do NOT include filenames, code, or explanations.
+- ONLY return the message.
+- ONE LINE. Max 100 characters.
+- Do NOT return this prompt or repeat anything from it.
 
 Git diff:
 {diff_text}
 
-Return only the commit message below:"""
+--- Commit message starts below this line ---
+"""
+
 
     print("⏳ Asking the model via Ollama...")
 
