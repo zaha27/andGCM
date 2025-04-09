@@ -1,5 +1,5 @@
 import json
-from config.config_loader import save_config
+from config.config_loader import save_config # type: ignore
 
 def launch_config_menu():
     print("=== GCM Config Menu ===")

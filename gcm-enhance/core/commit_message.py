@@ -1,5 +1,5 @@
 import subprocess
-from config.config_loader import load_config
+from config.config_loader import load_config # type: ignore
 from core.llm.ollama import generate_commit_message_with_ollama, is_ollama_running
 
 def main_gcm():
