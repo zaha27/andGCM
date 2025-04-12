@@ -6,6 +6,7 @@ def main_gcm():
     if not is_ollama_running():
         print("❌ Ollama daemon is not running.")
         print("💡 Tip: run 'open -a Ollama' or 'ollama serve' to start it.")
+        
         return
 
     config = load_config()
@@ -19,7 +20,7 @@ def main_gcm():
     if not diff.strip():
         print("⚠️  No staged changes detected. Use 'git add' before running gcm.")
         return
-
+    
     model = config.get("llm_model", "codellama")
     print(f"🤖 Generating commit message using model: {model}...\n")
 
